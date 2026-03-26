@@ -1,0 +1,44 @@
+import express from 'express';
+import cors from 'cors';
+import 'dotenv/config';
+import { connectMongoDB } from './db/connectMongoDB.js';
+import { errorHandler } from './middleware/errorHandler.js';
+import { logger } from './middleware/logger.js';
+import { notFoundHandler } from './middleware/notFoundHandler.js';
+import authRoutes from './routes/authRouter.js';
+import imagesRoutes from './routes/imagesRoutes.js';
+import adminImagesRoutes from './routes/adminImagesRouter.js';
+import { errors } from 'celebrate';
+import cookieParser from 'cookie-parser';
+
+const app = express();
+const PORT = process.env.PORT || 30001;
+
+app.use(express.json());
+app.use(
+  cors({
+    origin: 'http://localhost:3001', // URL фронтенду
+    credentials: true, // щоб cookies передавались
+  }),
+);
+app.use(cookieParser());
+app.use(logger);
+
+// Images router
+app.use('/auth', authRoutes);
+app.use('/images', imagesRoutes);
+app.use('/admin/images', adminImagesRoutes);
+
+// Middleware 404
+app.use(notFoundHandler);
+
+app.use(errors());
+
+// Middleware для обробки помилок
+app.use(errorHandler);
+
+await connectMongoDB();
+
+app.listen(PORT, () => {
+  console.log(`Start on port ${PORT}`);
+});
