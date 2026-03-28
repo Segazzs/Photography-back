@@ -10,11 +10,16 @@ import imagesRoutes from './routes/imagesRoutes.js';
 import adminImagesRoutes from './routes/adminImagesRouter.js';
 import { errors } from 'celebrate';
 import cookieParser from 'cookie-parser';
+import bodyParser from 'body-parser';
 
 const app = express();
 const PORT = process.env.PORT || 30001;
 
-app.use(express.json());
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
+
+// Или если используете express.json()
+app.use(express.json({ limit: '10mb' }));
 app.use(
   cors({
     origin: 'http://localhost:3001', // URL фронтенду

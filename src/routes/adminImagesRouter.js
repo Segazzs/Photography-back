@@ -3,6 +3,7 @@ import {
   createImage,
   deleteImage,
   updateImage,
+  reorderImages,
 } from '../controllers/imagesController.js';
 
 import { celebrate } from 'celebrate';
@@ -27,18 +28,21 @@ router.post(
   createImage,
 );
 
+// ВАЖНО: Специфический маршрут должен быть перед динамическим
+router.patch('/reorder', reorderImages); // 👈 переместите сюда
+
+router.patch(
+  '/:imageId', // 👈 динамический маршрут должен быть после специфических
+  upload.array('images', 20),
+  celebrate(updateImageSchema),
+  updateImage,
+);
+
 router.delete(
   '/:imageId',
   upload.array('images', 20),
   celebrate(imageIdParamSchema),
   deleteImage,
-);
-
-router.patch(
-  '/:imageId',
-  upload.array('images', 20),
-  celebrate(updateImageSchema),
-  updateImage,
 );
 
 export default router;

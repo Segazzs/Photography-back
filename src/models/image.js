@@ -1,3 +1,4 @@
+// models/image.js
 import { Schema, model } from 'mongoose';
 
 const imgSchema = new Schema(
@@ -10,6 +11,11 @@ const imgSchema = new Schema(
     publicId: {
       type: String,
       required: true,
+      index: true,
+    },
+    order: {
+      type: Number,
+      default: 0, // 👈 нове поле
       index: true,
     },
   },
